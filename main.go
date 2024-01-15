@@ -69,6 +69,19 @@ func toggleStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, todo)
 }
 
+func deleteTodo(c *gin.Context) {
+	id := c.Param("id")
+	updatedTodo := []Todo{}
+	for _, todo := range todos {
+		if todo.ID == id {
+			continue
+		}
+		updatedTodo = append(updatedTodo, todo)
+	}
+	todos = updatedTodo
+	c.IndentedJSON(http.StatusOK, gin.H{"success": true})
+}
+
 func main() {
 	// ?Create a server
 	router := gin.Default()
@@ -77,6 +90,7 @@ func main() {
 	router.POST("/todos", addTodo)
 	router.GET("/todos/:id", getTodo)
 	router.PATCH("/todos/:id", toggleStatus)
+	router.DELETE("/todos/:id", deleteTodo)
 
 	router.Run("localhost:8080")
 }
